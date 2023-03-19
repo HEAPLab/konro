@@ -249,7 +249,7 @@ short PuProgressivePolicy::getNewPU(const rmcommon::CpusetVector &vec)
         if (!availPUs.empty()) {
             // Pick a new PU to assign to Konro
             PUSet pus = getNearestPUs(usedPUs, availPUs);
-            logSet("PUPROGRESSIVEPOLICY nearestPUs : ", pus);
+            logSet("nearestPUs : ", pus);
             res = getLowerUsagePU(pus);
             log4cpp::Category::getRoot().debug("PUPROGRESSIVEPOLICY result is %d", res);
         }
