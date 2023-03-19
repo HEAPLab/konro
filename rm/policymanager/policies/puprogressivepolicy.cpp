@@ -160,9 +160,9 @@ PuProgressivePolicy::PUSet PuProgressivePolicy::getAvailablePUs(const PUSet &use
     PUSet res;
     std::set_difference(allPUs.begin(), allPUs.end(), usedPUs.begin(), usedPUs.end(), std::inserter(res, end(res)));
 
-    logSet("PUPROGRESSIVEPOLICY allPUs : ", allPUs);
-    logSet("PUPROGRESSIVEPOLICY usedPUs: ", usedPUs);
-    logSet("PUPROGRESSIVEPOLICY res    : ", res);
+    logSet("allPUs : ", allPUs);
+    logSet("usedPUs: ", usedPUs);
+    logSet("res    : ", res);
     return res;
 }
 
