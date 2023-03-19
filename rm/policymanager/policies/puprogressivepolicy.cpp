@@ -133,7 +133,12 @@ static void logSet(const char *name, const std::set<short> &s)
 static void logCpuSetVector(const char *name, const rmcommon::CpusetVector &vec)
 {
     std::string s = rmcommon::toString(vec);
-    log4cpp::Category::getRoot().debug("PUPROGRESSIVEPOLICY %s %s", name, s.c_str());
+    log4cpp::Category::getRoot().info("PUPROGRESSIVEPOLICY %s %s", name, s.c_str());
+}
+
+static void logCpuQuota(const char *name, const uint64_t nval)
+{
+    log4cpp::Category::getRoot().info("PUPROGRESSIVEPOLICY %s %ld", name, (long)nval);
 }
 
 /*!
@@ -412,14 +417,16 @@ void PuProgressivePolicy::feedback(AppMappingPtr appMapping, int feedback)
     // multiplier for resource scaling
     float scalePercentage = 0.15;
 
+    rmcommon::CpusetVector vec = appMapping->getPuVector();
+    logCpuSetVector("current usedPUs: ", vec);
+    logCpuQuota("current cpuQuota:", appMapping->getCpuMax());
+
     // in this case we try to improve app performance by assigning more resources
     if (feedback < lowerLimit) {
         // try to increase cpu bandwith without assigning more PUs
         if (increaseCPUquota(appMapping, scalePercentage))
             return;
         // try to increase assigned number of PUs otherwise
-        rmcommon::CpusetVector vec = appMapping->getPuVector();
-        logCpuSetVector("usedPUs: ", vec);
         short newPU = getNewPU(vec);
         if (newPU != -1) {
             log4cpp::Category::getRoot().info("PUPROGRESSIVEPOLICY adding PU %d", newPU);
@@ -438,8 +445,6 @@ void PuProgressivePolicy::feedback(AppMappingPtr appMapping, int feedback)
         if (decreaseCPUquota(appMapping, scalePercentage))
             return;
         // try to reduce assigned number of PUs otherwise
-        rmcommon::CpusetVector vec = appMapping->getPuVector();
-        logCpuSetVector("usedPUs: ", vec);
         short remPU = pickWorstPU(vec);
         if (remPU != -1) {
             log4cpp::Category::getRoot().info("PUPROGRESSIVEPOLICY removing PU %d", remPU);
