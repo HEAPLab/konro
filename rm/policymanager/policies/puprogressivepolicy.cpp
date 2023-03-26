@@ -136,9 +136,9 @@ static void logCpuSetVector(const char *name, const rmcommon::CpusetVector &vec)
     log4cpp::Category::getRoot().info("PUPROGRESSIVEPOLICY %s %s", name, s.c_str());
 }
 
-static void logCpuQuota(const char *name, const uint64_t nval)
+static void logCpuQuota(const char *name, const uint64_t nval, const int feedback)
 {
-    log4cpp::Category::getRoot().info("PUPROGRESSIVEPOLICY %s %ld", name, (long)nval);
+    log4cpp::Category::getRoot().info("PUPROGRESSIVEPOLICY %s %ld %d", name, (long)nval, feedback);
 }
 
 /*!
@@ -419,7 +419,7 @@ void PuProgressivePolicy::feedback(AppMappingPtr appMapping, int feedback)
 
     rmcommon::CpusetVector vec = appMapping->getPuVector();
     logCpuSetVector("current usedPUs: ", vec);
-    logCpuQuota("current cpuQuota:", appMapping->getCpuMax());
+    logCpuQuota("current cpuQuota and feedback:", appMapping->getCpuMax(), feedback);
 
     // in this case we try to improve app performance by assigning more resources
     if (feedback < lowerLimit) {
