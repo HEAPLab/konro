@@ -17,10 +17,12 @@ A modern resource manager
 - libhwloc-dev
 - libsensors-dev
 - libopencv-dev
+- Cuda Toolkit 
 
 OpenCV is required only for the peopledetect demo.
 If it is not installed, peopledetect is not compiled.
 
+Cuda Toolkit is required for the gpu plugin. It can be installed following this link https://developer.nvidia.com/cuda-downloads
 # Development
 
 QtCreator has been used as IDE for development on Ubuntu 22.04.2 LTS.
