@@ -41,6 +41,7 @@ struct GpuMonitor::GpuMonitorImpl {
         }else{
             this->initialized = true;
             result = nvmlDeviceGetCount(&nvml_devices_);
+            log4cpp::Category::getRoot().info( "Found %d NVML devices", nvml_devices_);
             for (unsigned int i = 0; i < nvml_devices_; i++)
             {
                 nvmlDevice_t device;
@@ -174,9 +175,7 @@ void GpuMonitor::run()
             rmcommon::GpuTemperature gpuTemp;
             rmcommon::GpuPower gpuPower;
             rmcommon::GpuLoad gpuLoad;
-            for(int i = 0; i < 3; i++){
-                pimpl_->handleGPUs(gpuLoad, gpuPower, gpuTemp);
-            }
+            pimpl_->handleGPUs(gpuLoad, gpuPower, gpuTemp);
             bus_.publish(new rmcommon::MonitorGpuEvent(gpuTemp, gpuPower, gpuLoad));
         }
     }

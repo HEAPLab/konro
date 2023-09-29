@@ -33,6 +33,8 @@ namespace rmcommon {
                     os << ',';
                 os << gpu;
             }
+            os << ']';
+            os << '}';
             return os;
         }
     };

@@ -40,9 +40,9 @@ public:
 
     virtual void printOnOstream(std::ostream &os) const {
         os << "{";
-        os << "\"platTemp\":" << gpuTemp_;
-        os << ",\"platPower\":" << gpuActualPower_;
-        os << ",\"platLoad\":" << gpuLoad_;
+        os << "\"gpuTemp\":" << gpuTemp_;
+        os << ",\"gpuPower\":" << gpuActualPower_;
+        os << ",\"gpuLoad\":" << gpuLoad_;
         os << "}";
     }
 };
