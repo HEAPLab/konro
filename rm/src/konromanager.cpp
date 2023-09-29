@@ -7,6 +7,7 @@
 #include "policymanager.h"
 #include "workloadmanager.h"
 #include "platformmonitor.h"
+#include "gpumonitor.h"
 #include "proclistener.h"
 #include "konrohttp.h"
 #include "policytimer.h"
@@ -49,6 +50,7 @@ struct KonroManager::KonroManagerImpl {
     rp::PolicyManager *policyManager;
     rp::PolicyTimer *policyTimer;
     PlatformMonitor *platformMonitor;
+    GpuMonitor *gpuMonitor;
 
     KonroManagerImpl() {
         procListener = nullptr;
@@ -57,6 +59,7 @@ struct KonroManager::KonroManagerImpl {
         policyManager = nullptr;
         policyTimer = nullptr;
         platformMonitor = nullptr;
+        gpuMonitor = nullptr;
     }
 
     ~KonroManagerImpl() {
@@ -66,6 +69,7 @@ struct KonroManager::KonroManagerImpl {
         delete policyManager;
         delete policyTimer;
         delete platformMonitor;
+        delete gpuMonitor;
     }
 };
 
@@ -108,6 +112,7 @@ void KonroManager::loadConfiguration(std::string configFile)
     cfgMonitorPeriod_ = configRead(config, "platformmonitor", "monitorperiod", 20);
     cfgCpuModuleNames_ = configRead(config, "platformmonitor", "kernelcpumodulenames", std::string("coretemp,k10temp,k8temp,cputemp"));
     cfgBatteryModuleNames_ = configRead(config, "platformmonitor", "kernelbatterymodulenames", std::string("BAT"));
+    cfgGpuMonitorPeriod_ = configRead(config, "gpumonitor", "monitorperiod", 20);
     httpListenHost_ = configRead(config, "http", "listenhost", std::string("localhost"));
     httpListenPort_ = configRead(config, "http", "listenport", 8080);
     changeContainerCgroup_ = configRead(config, "container", "changecontainercgroup", 1);
@@ -115,8 +120,9 @@ void KonroManager::loadConfiguration(std::string configFile)
 
     cat_.info("MAIN configuration: policy = %s", cfgPolicyName_.c_str());
     cat_.info("MAIN configuration: policy timer seconds = %d", cfgTimerSeconds_);
-    cat_.info("MAIN configuration: monitor period seconds = %d", cfgMonitorPeriod_);
+    cat_.info("MAIN configuration: CPU monitor period seconds = %d", cfgMonitorPeriod_);
     cat_.info("MAIN configuration: CPU module names = %s", cfgCpuModuleNames_.c_str());
+    cat_.info("MAIN configuration: GPU monitor period seconds = %d", cfgGpuMonitorPeriod_);
     cat_.info("MAIN configuration: battery module names = %s", cfgBatteryModuleNames_.c_str());
     cat_.info("MAIN configuration: HTTP listen on %s:%d", httpListenHost_.c_str(), httpListenPort_);
     cat_.info("MAIN configuration: change container cgroup = %s",
@@ -137,6 +143,7 @@ void KonroManager::run()
     pimpl_->workloadManager = new wm::WorkloadManager(pimpl_->eventBus, pimpl_->cgc);
     pimpl_->procListener = new wm::ProcListener(pimpl_->eventBus);
     pimpl_->platformMonitor = new PlatformMonitor(pimpl_->eventBus, pimpl_->platformDescription, cfgMonitorPeriod_);
+    pimpl_->gpuMonitor = new GpuMonitor(pimpl_->eventBus, cfgGpuMonitorPeriod_);
     pimpl_->policyTimer = new rp::PolicyTimer(pimpl_->eventBus, cfgTimerSeconds_);
 
     pimpl_->platformDescription.logTopology();
@@ -149,8 +156,9 @@ void KonroManager::run()
     // 2. WorkloadManager runs in a separate thread
     // 3. PolicyManager runs in a separate thread
     // 4. PlatformMonitor runs in a separate thread
-    // 5. KonroHttp runs in a separate thread
-    // 6. PolicyTimer runs in a separate thread
+    // 5. GPUMonitor runs in a separate thread
+    // 6. KonroHttp runs in a separate thread
+    // 7. PolicyTimer runs in a separate thread
 
     cat_.info("MAIN starting WorkloadManager thread");
     pimpl_->workloadManager->start();
@@ -169,6 +177,9 @@ void KonroManager::run()
     cat_.info("MAIN starting PlatformMonitor thread");
     pimpl_->platformMonitor->start();
 
+    cat_.info("MAIN starting PlatformMonitor thread");
+    pimpl_->gpuMonitor->start();
+
     cat_.info("MAIN starting HTTP thread");
     pimpl_->http->start();
 
@@ -184,6 +195,7 @@ void KonroManager::run()
         pimpl_->policyTimer->stop();
     }
     pimpl_->platformMonitor->stop();
+    pimpl_->gpuMonitor->stop();
     pimpl_->workloadManager->stop();
     pimpl_->policyManager->stop();
 
@@ -196,6 +208,7 @@ void KonroManager::run()
         pimpl_->policyTimer->join();
     }
     pimpl_->platformMonitor->join();
+    pimpl_->gpuMonitor->join();
     pimpl_->workloadManager->join();
     pimpl_->policyManager->join();
 
