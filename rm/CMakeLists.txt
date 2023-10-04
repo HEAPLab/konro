@@ -21,6 +21,8 @@ include_directories(${PROJECT_SOURCE_DIR}/rm/include)
 
 add_executable (konro ${konro_SOURCES} ${konro_HEADERS})
 target_compile_definitions(konro PUBLIC KONRO_RM)
+
+if(NVIDIA)
 target_link_libraries(konro PUBLIC
     konro-common
     rmcommon
@@ -30,5 +32,15 @@ target_link_libraries(konro PUBLIC
     platformmonitor
     gpumonitor
     ${LOG4CPP_LIBRARIES})
+else(NVIDIA)
+target_link_libraries(konro PUBLIC
+    konro-common
+    rmcommon
+    platformcontrol
+    workloadmanager
+    policymanager
+    platformmonitor
+    ${LOG4CPP_LIBRARIES})
+endif(NVIDIA)
 
 configure_file(konro.ini.in konro.ini)
