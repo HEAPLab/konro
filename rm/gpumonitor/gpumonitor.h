@@ -30,18 +30,7 @@ class GpuMonitor : public rmcommon::BaseThread {
 public:
     GpuMonitor(rmcommon::EventBus &eventBus, int monitorPeriod);
     ~GpuMonitor();
-
-//    /*!
-//     * \brief Sets the vector of possible CPU chip names.
-//     * \param names the comma separated list of module names
-//     */
-//    void setCpuModuleNames(const std::string &names);
-//
-//    /*!
-//     * \brief Sets the vector of possible battery module names.
-//     * \param names the comma separated list of module names
-//     */
-//    void setBatteryModuleNames(const std::string &names);
+    
 };
 
 #endif  // #ifndef GPUMONITOR_H

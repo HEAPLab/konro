@@ -69,20 +69,6 @@ struct GpuMonitor::GpuMonitorImpl {
         }
     }
 
-//    void setCpuModuleNames(const std::string &names) {
-//        cpuChips = rmcommon::tsplit(names, ",");
-//    }
-
-//    void setBatteryModuleNames(const std::string &names) {
-//        batteryChips = rmcommon::tsplit(names, ",");
-//        log4cpp::Category::getRoot().info("setBatteryModuleNames: %s", names.c_str());
-//        if (batteryChips.empty()) {
-//            log4cpp::Category::getRoot().info("setBatteryModuleNames: no battery names");
-//        } else {
-//            log4cpp::Category::getRoot().info("setBatteryModuleNames: %s", batteryChips[0].c_str());
-//        }
-//    }
-
     bool isGpuChip(string chip) {
         return find(begin(gpuChips), end(gpuChips), chip) != end(gpuChips);
     }
@@ -91,9 +77,6 @@ struct GpuMonitor::GpuMonitorImpl {
         unsigned int temp;
         result = nvmlDeviceGetTemperature(device, NVML_TEMPERATURE_GPU, &temp);
         if (result == NVML_SUCCESS) {
-//            rmcommon::ComponentTemperature componentTemp;
-//            componentTemp.label_ = "GPU";
-//            componentTemp.temp_ = temp;
             gpuTemp.addGpuTemperature(temp);
         }
     }
@@ -153,15 +136,6 @@ GpuMonitor::~GpuMonitor()
 {
 }
 
-//void PlatformMonitor::setCpuModuleNames(const std::string &names)
-//{
-//    pimpl_->setCpuModuleNames(names);
-//}
-//
-//void PlatformMonitor::setBatteryModuleNames(const std::string &names)
-//{
-//    pimpl_->setBatteryModuleNames(names);
-//}
 
 void GpuMonitor::run()
 {
