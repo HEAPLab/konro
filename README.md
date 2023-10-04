@@ -21,8 +21,15 @@ A modern resource manager
 
 OpenCV is required only for the peopledetect demo.
 If it is not installed, peopledetect is not compiled.
+# Optional: Nvidia GPU support
+nvidia-cuda-toolkit is required for the compilation with GPU monitoring. It can be installed from your package manager or by manually by following this link https://developer.nvidia.com/cuda-downloads.
+In order to compile, you need to add the NVIDIA flag to cmake:
+* `mkdir build && cd build`
+* `cmake -DNVIDIA=ON ..`  
+* `make`
 
-Cuda Toolkit is required for the gpu plugin. It can be installed following this link https://developer.nvidia.com/cuda-downloads
+If no GPUs are present, the manager will still work, but the monitor will just skip them.  
+If nothing is specified, GPU support will be disabled.
 # Development
 
 QtCreator has been used as IDE for development on Ubuntu 22.04.2 LTS.
