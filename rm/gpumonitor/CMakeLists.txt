@@ -10,5 +10,4 @@ add_library(gpumonitor
 )
 
 target_include_directories(gpumonitor INTERFACE .)
-#target_include_directories(gpumonitor PRIVATE CUDA::nvml)
 target_link_libraries(gpumonitor PUBLIC policymanager CUDA::nvml)

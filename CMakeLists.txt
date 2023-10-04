@@ -10,6 +10,7 @@ project (konro)
 list (APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
 
 option(TIMING "Enable low level timing" OFF)
+option(NVIDIA "Enable NVIDIA GPU management" OFF)
 
 if (NOT DEFINED CGROUPBASEDIR)
 set(CGROUPBASEDIR "/sys/fs/cgroup" CACHE STRING "The cgroup base directory")
@@ -20,6 +21,10 @@ add_definitions(-DCGROUPBASEDIR="${CGROUPBASEDIR}")
 if (TIMING)
     # enable low level timing of (some parts of the) code
     add_definitions(-DTIMING)
+endif()
+
+if (NVIDIA)
+    add_definitions(-DNVIDIA)
 endif()
 
 add_subdirectory (common)

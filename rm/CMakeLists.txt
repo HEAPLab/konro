@@ -9,7 +9,10 @@ add_subdirectory (platformcontrol)
 add_subdirectory (workloadmanager)
 add_subdirectory (policymanager)
 add_subdirectory (platformmonitor)
-add_subdirectory (gpumonitor)
+if(NVIDIA)
+    # Enable nvml code
+    add_subdirectory (gpumonitor)
+endif(NVIDIA)
 
 file(GLOB konro_SOURCES "src/*.cpp")
 file(GLOB konro_HEADERS "src/*.h")
