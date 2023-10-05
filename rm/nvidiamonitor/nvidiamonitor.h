@@ -1,5 +1,5 @@
-#ifndef GPUMONITOR_H
-#define GPUMONITOR_H
+#ifndef NVIDIAMONITOR_H
+#define NVIDIAMONITOR_H
 
 #include "eventbus.h"
 #include "basethread.h"
@@ -17,22 +17,22 @@
  * \class periodically samples information about the platform status.
  * This information is then encapsulated in a MonitorEvent and published
  * to the EventBus.
- * GpuMonitor runs in a dedicated thread.
+ * NvidiaMonitor runs in a dedicated thread.
  */
-class GpuMonitor : public rmcommon::BaseThread {
-    struct GpuMonitorImpl;
-    std::unique_ptr<GpuMonitorImpl> pimpl_;
+class NvidiaMonitor : public rmcommon::BaseThread {
+    struct NvidiaMonitorImpl;
+    std::unique_ptr <NvidiaMonitorImpl> pimpl_;
     log4cpp::Category &cat_;
     int monitorPeriod_;
     rmcommon::EventBus &bus_;
 
     virtual void run() override;
+
 public:
-    GpuMonitor(rmcommon::EventBus &eventBus, int monitorPeriod);
-    ~GpuMonitor();
-    
+    NvidiaMonitor(rmcommon::EventBus &eventBus, int monitorPeriod);
+
+    ~NvidiaMonitor();
+
 };
 
-#endif  // #ifndef GPUMONITOR_H
-
-
+#endif  // NVIDIAMONITOR_H

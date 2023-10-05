@@ -1,14 +1,14 @@
-#ifndef GPUTEMLERATURE_H
-#define GPUTEMLERATURE_H
+#ifndef GPUTEMPERATURE_H
+#define GPUTEMPERATURE_H
 
 #include <iostream>
 
 namespace rmcommon {
 /*!
- * \class encapsulates temperature information about the machine
+ * \class encapsulates temperature information about the GPU
  */
     class GpuTemperature {
-        /* Current power in mW */
+        /* Current temperature in CELSIUS */
         std::vector<int> gpu_;
     public:
 
@@ -41,4 +41,4 @@ namespace rmcommon {
 
 }   // namespace rmcommon
 
-#endif // GPUTEMLERATURE_H
+#endif // GPUTEMPERATURE_H

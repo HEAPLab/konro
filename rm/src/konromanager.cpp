@@ -8,7 +8,7 @@
 #include "workloadmanager.h"
 #include "platformmonitor.h"
 #ifdef NVIDIA
-#include "gpumonitor.h"
+#include "nvidiamonitor.h"
 #endif
 #include "proclistener.h"
 #include "konrohttp.h"
@@ -53,7 +53,7 @@ struct KonroManager::KonroManagerImpl {
     rp::PolicyTimer *policyTimer;
     PlatformMonitor *platformMonitor;
 #ifdef NVIDIA
-    GpuMonitor *gpuMonitor;
+    NvidiaMonitor *nvidiaMonitor;
 #endif
 
     KonroManagerImpl() {
@@ -64,7 +64,7 @@ struct KonroManager::KonroManagerImpl {
         policyTimer = nullptr;
         platformMonitor = nullptr;
 #ifdef NVIDIA
-        gpuMonitor = nullptr;
+        nvidiaMonitor = nullptr;
 #endif
     }
 
@@ -76,7 +76,7 @@ struct KonroManager::KonroManagerImpl {
         delete policyTimer;
         delete platformMonitor;
 #ifdef NVIDIA
-        delete gpuMonitor;
+        delete nvidiaMonitor;
 #endif
     }
 };
@@ -121,7 +121,7 @@ void KonroManager::loadConfiguration(std::string configFile)
     cfgCpuModuleNames_ = configRead(config, "platformmonitor", "kernelcpumodulenames", std::string("coretemp,k10temp,k8temp,cputemp"));
     cfgBatteryModuleNames_ = configRead(config, "platformmonitor", "kernelbatterymodulenames", std::string("BAT"));
 #ifdef NVIDIA
-    cfgGpuMonitorPeriod_ = configRead(config, "gpumonitor", "monitorperiod", 20);
+    cfgNvidiaMonitorPeriod_ = configRead(config, "nvidiamonitor", "monitorperiod", 20);
 #endif
     httpListenHost_ = configRead(config, "http", "listenhost", std::string("localhost"));
     httpListenPort_ = configRead(config, "http", "listenport", 8080);
@@ -133,7 +133,7 @@ void KonroManager::loadConfiguration(std::string configFile)
     cat_.info("MAIN configuration: CPU monitor period seconds = %d", cfgMonitorPeriod_);
     cat_.info("MAIN configuration: CPU module names = %s", cfgCpuModuleNames_.c_str());
 #ifdef NVIDIA
-    cat_.info("MAIN configuration: GPU monitor period seconds = %d", cfgGpuMonitorPeriod_);
+    cat_.info("MAIN configuration: NVIDIA GPU monitor period seconds = %d", cfgNvidiaMonitorPeriod_);
 #endif
     cat_.info("MAIN configuration: battery module names = %s", cfgBatteryModuleNames_.c_str());
     cat_.info("MAIN configuration: HTTP listen on %s:%d", httpListenHost_.c_str(), httpListenPort_);
@@ -156,7 +156,7 @@ void KonroManager::run()
     pimpl_->procListener = new wm::ProcListener(pimpl_->eventBus);
     pimpl_->platformMonitor = new PlatformMonitor(pimpl_->eventBus, pimpl_->platformDescription, cfgMonitorPeriod_);
 #ifdef NVIDIA
-    pimpl_->gpuMonitor = new GpuMonitor(pimpl_->eventBus, cfgGpuMonitorPeriod_);
+    pimpl_->nvidiaMonitor = new NvidiaMonitor(pimpl_->eventBus, cfgGpuMonitorPeriod_);
 #endif
     pimpl_->policyTimer = new rp::PolicyTimer(pimpl_->eventBus, cfgTimerSeconds_);
 
@@ -170,7 +170,7 @@ void KonroManager::run()
     // 2. WorkloadManager runs in a separate thread
     // 3. PolicyManager runs in a separate thread
     // 4. PlatformMonitor runs in a separate thread
-    // 5. GPUMonitor runs in a separate thread, if present
+    // 5. NvidiaMonitor runs in a separate thread, if present
     // 6. KonroHttp runs in a separate thread
     // 7. PolicyTimer runs in a separate thread
 
@@ -192,8 +192,8 @@ void KonroManager::run()
     pimpl_->platformMonitor->start();
 
 #ifdef NVIDIA
-    cat_.info("MAIN starting GPUMonitor thread");
-    pimpl_->gpuMonitor->start();
+    cat_.info("MAIN starting NvidiaMonitor thread");
+    pimpl_->nvidiaMonitor->start();
 #endif
 
     cat_.info("MAIN starting HTTP thread");
@@ -212,7 +212,7 @@ void KonroManager::run()
     }
     pimpl_->platformMonitor->stop();
 #ifdef NVIDIA
-    pimpl_->gpuMonitor->stop();
+    pimpl_->nvidiaMonitor->stop();
 #endif
     pimpl_->workloadManager->stop();
     pimpl_->policyManager->stop();
@@ -227,7 +227,7 @@ void KonroManager::run()
     }
     pimpl_->platformMonitor->join();
 #ifdef NVIDIA
-    pimpl_->gpuMonitor->join();
+    pimpl_->nvidiaMonitor->join();
 #endif
     pimpl_->workloadManager->join();
     pimpl_->policyManager->join();

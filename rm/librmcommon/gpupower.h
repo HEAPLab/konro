@@ -5,7 +5,7 @@
 
 namespace rmcommon {
 /*!
- * \class encapsulates power information about the machine
+ * \class encapsulates power information about the GPU
  */
 class GpuPower {
     /* Current power in mW */

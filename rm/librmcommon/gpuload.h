@@ -6,10 +6,10 @@
 
 namespace rmcommon {
 /*!
- * \class encapsulates cpu utilization information
+ * \class encapsulates GPU utilization information
  */
 class GpuLoad {
-    /*! Usage of each CPU */
+    /*! % Usage of each GPU */
     std::vector<int> gpu_;
 
 public:

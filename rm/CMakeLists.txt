@@ -11,7 +11,7 @@ add_subdirectory (policymanager)
 add_subdirectory (platformmonitor)
 if(NVIDIA)
     # Enable nvml code
-    add_subdirectory (gpumonitor)
+    add_subdirectory (nvidiamonitor)
 endif(NVIDIA)
 
 file(GLOB konro_SOURCES "src/*.cpp")
@@ -30,7 +30,7 @@ target_link_libraries(konro PUBLIC
     workloadmanager
     policymanager
     platformmonitor
-    gpumonitor
+        nvidiamonitor
     ${LOG4CPP_LIBRARIES})
 else(NVIDIA)
 target_link_libraries(konro PUBLIC

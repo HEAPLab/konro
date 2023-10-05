@@ -14,7 +14,7 @@ class KonroManager {
     std::string cfgPolicyName_;
     int cfgTimerSeconds_;       // 0 means "no timer"
     int cfgMonitorPeriod_;
-    int cfgGpuMonitorPeriod_;
+    int cfgNvidiaMonitorPeriod_;
     std::string cfgCpuModuleNames_;
     std::string cfgBatteryModuleNames_;
     std::string httpListenHost_;
