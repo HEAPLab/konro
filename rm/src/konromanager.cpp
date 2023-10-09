@@ -156,7 +156,7 @@ void KonroManager::run()
     pimpl_->procListener = new wm::ProcListener(pimpl_->eventBus);
     pimpl_->platformMonitor = new PlatformMonitor(pimpl_->eventBus, pimpl_->platformDescription, cfgMonitorPeriod_);
 #ifdef NVIDIA
-    pimpl_->nvidiaMonitor = new NvidiaMonitor(pimpl_->eventBus, cfgGpuMonitorPeriod_);
+    pimpl_->nvidiaMonitor = new NvidiaMonitor(pimpl_->eventBus, cfgNvidiaMonitorPeriod_);
 #endif
     pimpl_->policyTimer = new rp::PolicyTimer(pimpl_->eventBus, cfgTimerSeconds_);
 

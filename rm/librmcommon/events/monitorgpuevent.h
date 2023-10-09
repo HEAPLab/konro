@@ -30,11 +30,11 @@ public:
         return gpuTemp_;
     }
 
-    GpuPower getPlatformPower() const {
+    GpuPower getGpuPower() const {
         return gpuActualPower_;
     }
 
-    GpuLoad getPlatformLoad() const {
+    GpuLoad getGpuLoad() const {
         return gpuLoad_;
     }
 

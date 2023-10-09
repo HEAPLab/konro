@@ -106,9 +106,9 @@ struct NvidiaMonitor::NvidiaMonitorImpl {
                     log4cpp::Category::getRoot().info("Failed to get device handle: %s", nvmlErrorString(result));
                     continue; // Continue with the next device on error
                 }
-                handleGpuTemp(device, gpuTemperature);
-                handleGpuPower(device, gpuPower);
-                handleGpuLoad(device, gpuLoad);
+                handleNvidiaTemp(device, gpuTemperature);
+                handleNvidiaPower(device, gpuPower);
+                handleNvidiaLoad(device, gpuLoad);
             }
         }
     }
@@ -135,7 +135,7 @@ void NvidiaMonitor::run() {
             rmcommon::GpuTemperature gpuTemp;
             rmcommon::GpuPower gpuPower;
             rmcommon::GpuLoad gpuLoad;
-            pimpl_->handleGPUs(gpuLoad, gpuPower, gpuTemp);
+            pimpl_->handleNVGPUs(gpuLoad, gpuPower, gpuTemp);
             bus_.publish(new rmcommon::MonitorGpuEvent(gpuTemp, gpuPower, gpuLoad));
         }
     }
