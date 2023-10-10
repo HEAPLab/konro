@@ -8,6 +8,7 @@
 #include "removeevent.h"
 #include "timerevent.h"
 #include "monitorevent.h"
+#include "monitorgpuevent.h"
 #include "feedbackevent.h"
 #include "appmapping.h"
 #include "policies/ibasepolicy.h"
@@ -77,6 +78,12 @@ private:
      * \param ev the event to process
      */
     void processMonitorEvent(std::shared_ptr<const rmcommon::MonitorEvent> event);
+
+    /*!
+     * Processes a MonitorGpuEvent
+     * \param ev the event to process
+     */
+    void processMonitorGpuEvent(std::shared_ptr<const rmcommon::MonitorGpuEvent> event);
 
     /*!
      * Processes a FeedbackEvent

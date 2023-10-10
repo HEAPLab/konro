@@ -74,6 +74,7 @@ void PolicyManager::subscribeToEvents()
     bus_.subscribe<PolicyManager, TimerEvent, BaseEvent>(this, &PolicyManager::addEvent);
     bus_.subscribe<PolicyManager, FeedbackEvent, BaseEvent>(this, &PolicyManager::addEvent);
     bus_.subscribe<PolicyManager, MonitorEvent, BaseEvent>(this, &PolicyManager::addEvent);
+    bus_.subscribe<PolicyManager, MonitorGpuEvent, BaseEvent>(this, &PolicyManager::addEvent);
 }
 
 bool PolicyManager::processEvent(std::shared_ptr<const rmcommon::BaseEvent> event)
@@ -93,6 +94,8 @@ bool PolicyManager::processEvent(std::shared_ptr<const rmcommon::BaseEvent> even
         processTimerEvent(static_pointer_cast<const TimerEvent>(event));
     } else if (const MonitorEvent *e = dynamic_cast<const MonitorEvent *>(event.get())) {
         processMonitorEvent(static_pointer_cast<const MonitorEvent>(event));
+    } else if (const MonitorGpuEvent *e = dynamic_cast<const MonitorGpuEvent *>(event.get())) {
+        processMonitorGpuEvent(static_pointer_cast<const MonitorGpuEvent>(event));
     } else if (const FeedbackEvent *e = dynamic_cast<const FeedbackEvent *>(event.get())) {
         processFeedbackEvent(static_pointer_cast<const FeedbackEvent>(event));
     }
@@ -133,6 +136,14 @@ void PolicyManager::processMonitorEvent(std::shared_ptr<const rmcommon::MonitorE
     os << "POLICYMANAGER monitor event received => " << *event;
     cat_.info(os.str());
     policy_->monitor(event);
+}
+
+void PolicyManager::processMonitorGpuEvent(std::shared_ptr<const rmcommon::MonitorGpuEvent> event)
+{
+    ostringstream os;
+    os << "POLICYMANAGER GPU monitor event received => " << *event;
+    cat_.info(os.str());
+//    policy_->monitor(event);
 }
 
 void PolicyManager::processFeedbackEvent(std::shared_ptr<const rmcommon::FeedbackEvent> event)
